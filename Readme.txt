@@ -7,3 +7,5 @@ It currently uses a lot of memory, can only record from the primary screen and o
 The source code is release under The Code Project Open License (CPOL) 1.02 (http://www.codeproject.com/info/cpol10.aspx) because some of the code is from http://www.codeproject.com/KB/audio-video/Mp3SoundCapture.aspx.
 
 For other open source options checkout http://camstudio.org/, http://www.advancity.net/eng/products/capturefox.html, http://www.webinaria.com/record.php, and http://krut.sourceforge.net/.
+
+Also check out the sample video http://majorsilence.com/sites/default/files/output-24-12-2009-10-14-10.avi.
