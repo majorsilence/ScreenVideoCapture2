@@ -23,21 +23,20 @@ namespace ScreenVideoCapture2
     public partial class MainForm : Form
     {
        
-        private string saveLocation;
-        private Sound2 snd;
-        private MousePosition mspos;
-        private SolidBrush brushOpacity;
-        private int radius;
+        private string _saveLocation;
+        
+        private SolidBrush _brushOpacity;
+        private int _radius;
 
         /// <summary>
         /// Keep track of starttime and end time and count to calculate fps.
         /// </summary>
-        private DateTime startTime;
-        private DateTime endTime;
-        private int counter;
-        private System.Drawing.Size finalSize;
-        private System.Drawing.Size screenSize;
-        private string finishedDate;
+        private DateTime _startTime;
+        private DateTime _endTime;
+        private int _counter;
+        private System.Drawing.Size _finalSize;
+        private System.Drawing.Size _screenSize;
+        private string _finishedDate;
 
 
 
@@ -46,15 +45,14 @@ namespace ScreenVideoCapture2
         {
             InitializeComponent();
 
-            finishedDate = "";
+            _finishedDate = "";
 
-            screenSize = new Size(Screen.PrimaryScreen.Bounds.Size.Width, Screen.PrimaryScreen.Bounds.Size.Height);
+            _screenSize = new Size(Screen.PrimaryScreen.Bounds.Size.Width, Screen.PrimaryScreen.Bounds.Size.Height);
 
-            counter = 0;
-            mspos = new MousePosition();
+            _counter = 0;
 
-            brushOpacity = GetNewColorBrush();
-            radius = 45;
+            _brushOpacity = GetNewColorBrush();
+            _radius = 45;
 
 
         }
@@ -64,15 +62,12 @@ namespace ScreenVideoCapture2
 
             // we only want to show the sound options if the show button is clicked.
             MakeSoundOptionsVisible(false);
-            LoadAvailableFormats(PcmSoundFormat.StandardFormats);
             LoadAvailableDevices();
-            LoadAvailableBitRates();
 
             txtLocation.Text = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop), "video-capture");
 
             cboFinalSize.SelectedIndex = 0; //default to fullscreen
 
-            mp3Rd_CheckedChanged(sender, e);
         }
 
         public void SetStatusLabelText(string message)
@@ -82,51 +77,39 @@ namespace ScreenVideoCapture2
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //Bitmap pic = (Bitmap)CaptureScreen();
 
-            Bitmap pic;
+           
+            AsyncProcess caller = new AsyncProcess(CaptureScreen);
+            caller.BeginInvoke(_counter, this._screenSize, this._finalSize, chkHaloMouse.Checked, 
+                chkIncludeMouse.Checked, _saveLocation, _radius, null, null);
 
-            if (finalSize != screenSize)
-            {
-                pic = (Bitmap)ImageOperations.ResizeImage(CaptureScreen(), finalSize.Width, finalSize.Height);
-            }
-            else
-            {
-                pic = (Bitmap)CaptureScreen();
-            }
-
-            try
-            {
-                pic.Save(System.IO.Path.Combine(saveLocation, "screenvideocapture_" + counter.ToString().PadLeft(10, '0') + ".jpg"), System.Drawing.Imaging.ImageFormat.Jpeg);
-                pic.Dispose();
-                counter++;
-            }
-            catch (IOException iex)
-            {
-                Logging.Instance.WriteLine(iex);
-            }
+            _counter++;
 
             
         }
 
+        delegate void AsyncProcess(int imageCount, Size screenSize, Size screenfinalSize, bool haloMouse,
+            bool includeMouse, string saveLocation, int radius);
 
-        private System.Drawing.Image CaptureScreen()
+
+        private void CaptureScreen(int imageCount, Size screenSize, Size screenfinalSize, bool haloMouse,
+            bool includeMouse, string saveLocation, int radius)
         {
 
             //System.Drawing.Size s = new System.Drawing.Size();
             //s.Height = Screen.PrimaryScreen.Bounds.Size.Height;
             //s.Width = Screen.PrimaryScreen.Bounds.Size.Width;
-
+            MousePosition mspos = new MousePosition();
             Bitmap bmp = new Bitmap(screenSize.Width, screenSize.Height);
             Graphics g = Graphics.FromImage(bmp);
-            g.CopyFromScreen(0, 0, 0, 0, screenSize);
+            g.CopyFromScreen( 0, 0, 0, 0, screenSize);
 
-            if (chkHaloMouse.Checked)
+            if (haloMouse)
             {
                 //g.DrawEllipse(Pens.Green, pnt.X, pnt.Y, radius, radius);
-                g.FillEllipse(brushOpacity, mspos.Position().X - (radius/2), mspos.Position().Y - (radius/2), radius, radius);
+                g.FillEllipse(_brushOpacity, mspos.Position().X - (radius/2), mspos.Position().Y - (radius/2), radius, radius);
             }
-            if (chkIncludeMouse.Checked)
+            if (includeMouse)
             {
                 int x=0;
                 int y=0;
@@ -142,52 +125,66 @@ namespace ScreenVideoCapture2
             }
 
             g.Dispose();
-            return bmp;
+
+            if (screenfinalSize != screenSize)
+            {
+                bmp = (Bitmap)ImageOperations.ResizeImage(bmp, screenfinalSize.Width, screenfinalSize.Height);
+            }
+
+            try
+            {
+                bmp.Save(System.IO.Path.Combine(saveLocation, "screenvideocapture_" + imageCount.ToString().PadLeft(10, '0') + ".jpg"), System.Drawing.Imaging.ImageFormat.Jpeg);
+                bmp.Dispose();
+            }
+            catch (IOException iex)
+            {
+                Logging.Instance.WriteLine(iex);
+            }
         }
 
         private void SetFinalSize()
         {
             if (cboFinalSize.SelectedItem.ToString() == "Fullscreen")
             {
-                finalSize = new Size(Screen.PrimaryScreen.Bounds.Size.Width, Screen.PrimaryScreen.Bounds.Size.Height);
+                _finalSize = new Size(Screen.PrimaryScreen.Bounds.Size.Width, Screen.PrimaryScreen.Bounds.Size.Height);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "720x480")
             {
-                finalSize = new Size(720, 480);
+                _finalSize = new Size(720, 480);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "704x480")
             {
-                finalSize = new Size(704, 480);
+                _finalSize = new Size(704, 480);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "480x480")
             {
-                finalSize = new Size(480, 480);
+                _finalSize = new Size(480, 480);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "352x480")
             {
-                finalSize = new Size(352, 480);
+                _finalSize = new Size(352, 480);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "640x480")
             {
-                finalSize = new Size(640, 480);
+                _finalSize = new Size(640, 480);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "640x360")
             {
-                finalSize = new Size(640, 360);
+                _finalSize = new Size(640, 360);
             }
             else if (cboFinalSize.SelectedItem.ToString() == "480x360")
             {
-                finalSize = new Size(480, 360);
+                _finalSize = new Size(480, 360);
             }
             else
             {
-                finalSize = new Size(352, 240);
+               _finalSize = new Size(352, 240);
             }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            this.saveLocation = txtLocation.Text.Trim();
+            this._saveLocation = txtLocation.Text.Trim();
             if (System.IO.Directory.Exists(txtLocation.Text.Trim()) == false)
             {
                 try
@@ -222,10 +219,9 @@ namespace ScreenVideoCapture2
 
             toolStripStatus.Text = "Recording ...";
 
-            snd = new Sound2(cmbDevices.SelectedItem, cmbFormats.SelectedItem, cmbBitrate.SelectedItem, 
-                this.saveLocation, chkNormalize.Checked, chkAsyncStop.Checked, RecordType.wav);
+            
 
-            counter = 0;
+            _counter = 0;
 
             btnStart.Enabled = false;
             chkAudio.Enabled = false;
@@ -234,11 +230,12 @@ namespace ScreenVideoCapture2
             chkIncludeMouse.Enabled = false;
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
 
-            startTime = DateTime.Now;
+            _startTime = DateTime.Now;
 
             if (chkAudio.Checked)
             {
-                snd.RecordFromMic();
+                MCIAudio.OpenNew();
+                MCIAudio.Record();
             }
             timer1.Start();
             //Thread.Sleep(2000); // audio is alwasy 2 seconds off for some reason
@@ -250,12 +247,16 @@ namespace ScreenVideoCapture2
             btnStop.Enabled = false;
             
             timer1.Stop();
+
+            // give enough time for images that are being captured to be saved.
+            System.Threading.Thread.Sleep(500);
             if (chkAudio.Checked)
             {
-                snd.StopAndSave();
+                MCIAudio.SaveRecording(System.IO.Path.Combine(_saveLocation, "record.wav"));
+                MCIAudio.Stop();
             }
 
-            endTime = DateTime.Now;
+            _endTime = DateTime.Now;
 
             bwCreateVideo.RunWorkerAsync();
         }
@@ -265,7 +266,7 @@ namespace ScreenVideoCapture2
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 txtLocation.Text = folderBrowserDialog1.SelectedPath;
-                this.saveLocation = folderBrowserDialog1.SelectedPath;
+                this._saveLocation = folderBrowserDialog1.SelectedPath;
                 
             }
         }
@@ -273,7 +274,7 @@ namespace ScreenVideoCapture2
 
         private void CreateVideo()
         {
-            System.Environment.CurrentDirectory = this.saveLocation;
+            System.Environment.CurrentDirectory = this._saveLocation;
             string extraArgs = "";
             string fDate = "";
 
@@ -282,8 +283,8 @@ namespace ScreenVideoCapture2
                 Thread.Sleep(500);
             }
 
-            int seconds = (int)(this.endTime - this.startTime).TotalSeconds;
-            string fps = (this.counter) + "/" + seconds;
+            int seconds = (int)(this._endTime - this._startTime).TotalSeconds;
+            string fps = (this._counter) + "/" + seconds;
 
 
             process1.StartInfo.FileName = System.IO.Path.Combine(Application.StartupPath, "mencoder.exe");
@@ -349,13 +350,11 @@ namespace ScreenVideoCapture2
 
         protected void CleanWorkingFolder()
         {
-            string imgFolder = this.saveLocation;
+            string imgFolder = this._saveLocation;
             string[] imgList = System.IO.Directory.GetFiles(imgFolder, "screenvideocapture*.jpg");
             foreach (string img in imgList)
             {
-                System.IO.FileInfo imgInfo = new System.IO.FileInfo(img);
-
-                imgInfo.Delete();
+                System.IO.File.Delete(img);
             }
 
             try
@@ -451,21 +450,16 @@ namespace ScreenVideoCapture2
                 this.Height = 365;
             }
             lblDevice.Visible = visible;
-            lblMP3Bitrate.Visible = visible;
-            lblSampling.Visible = visible;
             lblFinalSize.Visible = visible;
             cboFinalSize.Visible = visible;
-            cmbFormats.Visible = visible;
-            cmbBitrate.Visible = visible;
             cmbDevices.Visible = visible;
-            chkNormalize.Visible = visible;
             chkAsyncStop.Visible = visible;
             chkEditVideo.Visible = visible;
         }
 
         private void btnAudioSettings_Click(object sender, EventArgs e)
         {
-            if (cmbFormats.Visible == false)
+            if (cmbDevices.Visible == false)
             {
                 MakeSoundOptionsVisible(true);
             }
@@ -476,99 +470,17 @@ namespace ScreenVideoCapture2
         }
 
 
-        private void SoundSettings_Load(object sender, EventArgs e)
-        {
-            LoadAvailableFormats(PcmSoundFormat.StandardFormats);
-
-            foreach (SoundCaptureDevice device in SoundCaptureDevice.AllAvailable)
-            {
-                cmbDevices.Items.Add(device);
-            }
-
-            cmbDevices.SelectedIndex = 0;
-        }
-
-
-        private void LoadAvailableFormats(IEnumerable<PcmSoundFormat> formats)
-        {
-            cmbFormats.Items.Clear();
-
-            int selectIndex = 0;
-            int count =0;
-            foreach (PcmSoundFormat format in formats)
-            {
-                if (format.ToString().ToLower() == "16000 hz, 16 bit, stereo" || format.ToString().ToLower() == "11025 hz, 16 bit, stereo")
-                {
-                    selectIndex = count;
-                }
-                cmbFormats.Items.Add(format);
-                count++;
-            }
-
-            //formatsCmb.SelectedIndex = 0;
-            cmbFormats.SelectedIndex = selectIndex;
-        }
-
         private void LoadAvailableDevices()
         {
-            foreach (SoundCaptureDevice device in SoundCaptureDevice.AllAvailable)
-            {
-                cmbDevices.Items.Add(device);
-            }
-            if (cmbDevices.Items.Count > 0)
-            {
-                cmbDevices.SelectedIndex = 0;
-            }
+   
+
         }
 
-        private void LoadAvailableBitRates()
-        {
-            cmbBitrate.Items.Clear();
-
-            foreach (Mp3BitRate bitRate in ((PcmSoundFormat)cmbFormats.SelectedItem).GetCompatibleMp3BitRates())
-            {
-                cmbBitrate.Items.Add(bitRate);
-            }
-
-            if (cmbBitrate.Items.Count > 0)
-            {
-                cmbBitrate.SelectedIndex = 0;
-            }
-        }
 
         private void devicesCmb_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
 
-        private void formatsCmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadAvailableBitRates();
-        }
-
-        private void bitRateCmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
- 
-        }
-
-
-        private void mp3Rd_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (mp3Rd.Checked)
-            //{
-            //    LoadAvailableFormats(Mp3SoundFormat.AllSourceFormats);
-            //    cmbFormats.SelectedItem = PcmSoundFormat.Pcm44kHz16bitStereo;
-            //    cmbBitrate.Enabled = true;
-            //    cmbBitrate.SelectedItem = Mp3BitRate.BitRate192;
-
-            //    fileTxt.Text = Path.Combine(Path.GetDirectoryName(fileTxt.Text),
-            //        Path.GetFileNameWithoutExtension(fileTxt.Text) + ".mp3");
-            //}
-            //else
-            //{
-                LoadAvailableFormats(PcmSoundFormat.StandardFormats);
-                cmbBitrate.Enabled = false;
-            //}
-        }
 
         private void bwCreateVideo_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -595,7 +507,7 @@ namespace ScreenVideoCapture2
             }
             else if (e.ProgressPercentage == 1)
             {
-                this.finishedDate = e.UserState.ToString();
+                this._finishedDate = e.UserState.ToString();
             }
 
         }
@@ -620,7 +532,7 @@ namespace ScreenVideoCapture2
 
                     processEditVideo.StartInfo.FileName = movieMaker;
                     // harddup - use this so duplicate pictures are not removed, if they are removed there will be major audio video sync problems. 
-                    processEditVideo.StartInfo.Arguments = System.IO.Path.Combine(this.saveLocation, "output-" + this.finishedDate + ".avi");
+                    processEditVideo.StartInfo.Arguments = System.IO.Path.Combine(this._saveLocation, "output-" + this._finishedDate + ".avi");
                     processEditVideo.StartInfo.RedirectStandardOutput = false;
                     //this.StartInfo.RedirectStandardError = true; // redirecting StandardError or any input output for that matter will fill the buffer and hang the program if you do not read it in and dispose of it
                     processEditVideo.StartInfo.CreateNoWindow = true;

@@ -50,13 +50,8 @@
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.chkAsyncStop = new System.Windows.Forms.CheckBox();
-            this.cmbBitrate = new System.Windows.Forms.ComboBox();
-            this.lblMP3Bitrate = new System.Windows.Forms.Label();
-            this.chkNormalize = new System.Windows.Forms.CheckBox();
             this.cmbDevices = new System.Windows.Forms.ComboBox();
             this.lblDevice = new System.Windows.Forms.Label();
-            this.cmbFormats = new System.Windows.Forms.ComboBox();
-            this.lblSampling = new System.Windows.Forms.Label();
             this.lblFinalSize = new System.Windows.Forms.Label();
             this.cboFinalSize = new System.Windows.Forms.ComboBox();
             this.bwCreateVideo = new System.ComponentModel.BackgroundWorker();
@@ -185,8 +180,8 @@
             // 
             // txtLocation
             // 
-            this.txtLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLocation.Location = new System.Drawing.Point(12, 39);
             this.txtLocation.Name = "txtLocation";
             this.txtLocation.Size = new System.Drawing.Size(355, 20);
@@ -248,37 +243,6 @@
             this.chkAsyncStop.Text = "Async Stop";
             this.chkAsyncStop.UseVisualStyleBackColor = true;
             // 
-            // cmbBitrate
-            // 
-            this.cmbBitrate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBitrate.FormattingEnabled = true;
-            this.cmbBitrate.Location = new System.Drawing.Point(85, 236);
-            this.cmbBitrate.Name = "cmbBitrate";
-            this.cmbBitrate.Size = new System.Drawing.Size(178, 21);
-            this.cmbBitrate.TabIndex = 40;
-            this.cmbBitrate.SelectedIndexChanged += new System.EventHandler(this.bitRateCmb_SelectedIndexChanged);
-            // 
-            // lblMP3Bitrate
-            // 
-            this.lblMP3Bitrate.AutoSize = true;
-            this.lblMP3Bitrate.Location = new System.Drawing.Point(14, 239);
-            this.lblMP3Bitrate.Name = "lblMP3Bitrate";
-            this.lblMP3Bitrate.Size = new System.Drawing.Size(62, 13);
-            this.lblMP3Bitrate.TabIndex = 42;
-            this.lblMP3Bitrate.Text = "MP3 Bitrate";
-            // 
-            // chkNormalize
-            // 
-            this.chkNormalize.AutoSize = true;
-            this.chkNormalize.Checked = true;
-            this.chkNormalize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkNormalize.Location = new System.Drawing.Point(16, 274);
-            this.chkNormalize.Name = "chkNormalize";
-            this.chkNormalize.Size = new System.Drawing.Size(72, 17);
-            this.chkNormalize.TabIndex = 41;
-            this.chkNormalize.Text = "Normalize";
-            this.chkNormalize.UseVisualStyleBackColor = true;
-            // 
             // cmbDevices
             // 
             this.cmbDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -297,25 +261,6 @@
             this.lblDevice.Size = new System.Drawing.Size(41, 13);
             this.lblDevice.TabIndex = 38;
             this.lblDevice.Text = "Device";
-            // 
-            // cmbFormats
-            // 
-            this.cmbFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFormats.FormattingEnabled = true;
-            this.cmbFormats.Location = new System.Drawing.Point(85, 208);
-            this.cmbFormats.Name = "cmbFormats";
-            this.cmbFormats.Size = new System.Drawing.Size(178, 21);
-            this.cmbFormats.TabIndex = 39;
-            this.cmbFormats.SelectedIndexChanged += new System.EventHandler(this.formatsCmb_SelectedIndexChanged);
-            // 
-            // lblSampling
-            // 
-            this.lblSampling.AutoSize = true;
-            this.lblSampling.Location = new System.Drawing.Point(14, 211);
-            this.lblSampling.Name = "lblSampling";
-            this.lblSampling.Size = new System.Drawing.Size(50, 13);
-            this.lblSampling.TabIndex = 36;
-            this.lblSampling.Text = "Sampling";
             // 
             // lblFinalSize
             // 
@@ -349,8 +294,8 @@
             // 
             this.bwCreateVideo.WorkerReportsProgress = true;
             this.bwCreateVideo.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwCreateVideo_DoWork);
-            this.bwCreateVideo.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCreateVideo_RunWorkerCompleted);
             this.bwCreateVideo.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwCreateVideo_ProgressChanged);
+            this.bwCreateVideo.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCreateVideo_RunWorkerCompleted);
             // 
             // chkEditVideo
             // 
@@ -399,13 +344,8 @@
             this.Controls.Add(this.cboFinalSize);
             this.Controls.Add(this.lblFinalSize);
             this.Controls.Add(this.chkAsyncStop);
-            this.Controls.Add(this.cmbBitrate);
-            this.Controls.Add(this.lblMP3Bitrate);
-            this.Controls.Add(this.chkNormalize);
             this.Controls.Add(this.cmbDevices);
             this.Controls.Add(this.lblDevice);
-            this.Controls.Add(this.cmbFormats);
-            this.Controls.Add(this.lblSampling);
             this.Controls.Add(this.btnAudioSettings);
             this.Controls.Add(this.chkHaloMouse);
             this.Controls.Add(this.chkAudio);
@@ -444,13 +384,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem1;
         private System.Windows.Forms.CheckBox chkAsyncStop;
-        private System.Windows.Forms.ComboBox cmbBitrate;
-        private System.Windows.Forms.Label lblMP3Bitrate;
-        private System.Windows.Forms.CheckBox chkNormalize;
         private System.Windows.Forms.ComboBox cmbDevices;
         private System.Windows.Forms.Label lblDevice;
-        private System.Windows.Forms.ComboBox cmbFormats;
-        private System.Windows.Forms.Label lblSampling;
         private System.Windows.Forms.Button btnAudioSettings;
         private System.Windows.Forms.CheckBox chkHaloMouse;
         private System.Windows.Forms.CheckBox chkAudio;

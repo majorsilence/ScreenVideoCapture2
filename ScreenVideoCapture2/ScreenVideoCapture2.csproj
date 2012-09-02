@@ -102,6 +102,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MCIAudio.cs" />
     <Compile Include="MousePosition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -128,21 +129,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Sound.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="deps\Istrib.Sound.dll" />
-    <Content Include="deps\Istrib.Sound.Mp3.dll" />
-    <Content Include="deps\yeti.mmedia.dll" />
-    <Content Include="deps\yeti.mp3.dll" />
     <Content Include="lame_enc.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="mencoder.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="deps\Microsoft.DirectX.DirectSound.dll" />
-    <Content Include="deps\Microsoft.DirectX.dll" />
     <Content Include="silence.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
