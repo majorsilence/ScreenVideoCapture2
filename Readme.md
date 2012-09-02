@@ -9,3 +9,5 @@ The source code is release under The Code Project Open License (CPOL) 1.02 (http
 For other open source options checkout http://camstudio.org/, http://www.advancity.net/eng/products/capturefox.html, http://www.webinaria.com/record.php, and http://krut.sourceforge.net/.
 
 Also check out the sample video http://majorsilence.com/sites/default/files/output-24-12-2009-10-14-10.avi.
+
+
